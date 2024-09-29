@@ -19,9 +19,9 @@ def process_image(image_path):
     maxRadius = int(image_width // 3)  # 画像の幅の1/3
 
     # HoughCirclesによる円の検出（Cannyやdpは使わない）
-    circles = cv2.HoughCircles(bw, cv2.HOUGH_GRADIENT, 1,minDist=50,
-                               param2=30, minRadius=minRadius, maxRadius=maxRadius)
-    
+    circles = cv2.HoughCircles(bw, cv2.HOUGH_GRADIENT, dp=1,minDist=50,
+                               param2=10, minRadius=0, maxRadius=0)
+
     if circles is not None:
         circles = np.uint16(np.around(circles))
         for i in circles[0, :]:
@@ -40,6 +40,8 @@ def process_image(image_path):
                 # 最長の線を選択
                 longest_line = max(lines, key=lambda line: np.linalg.norm((line[0][0] - line[0][2], line[0][1] - line[0][3])))
                 return i[0], i[1], longest_line  # 円の中心座標と最長線の情報を返す
-
-    return None, None, None
+            else:
+                print("最長の線を検出できませんでした。")
+    else:
+        return None, None, None
 
